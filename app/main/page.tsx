@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useRef, useState } from 'react';
+import Image from 'next/image';
 import { 
   motion, 
   useScroll, 
@@ -20,22 +21,26 @@ import SectionHeading from '@/components/SectionHeading';
 import ContentWrap from '@/components/ContentWrap';
 import FirstYearStickyScroll from '@/components/FirstYearStickyScroll';
 
+const OPTIMIZED = '/optimized';
+
 const GALLERY_BENTO_IMAGES = [
-  '/hello-zoe.webp',
-  '/smile.webp',
-  '/playing.webp',
-  '/9.webp',
+  `${OPTIMIZED}/hello-zoe.webp`,
+  `${OPTIMIZED}/smile.webp`,
+  `${OPTIMIZED}/playing.webp`,
+  `${OPTIMIZED}/9.webp`,
 ] as const;
 
 const MONTH_TIMELINE_IMAGES = [
-  '/0.webp', '/1.webp', '/2.webp', '/3.webp', '/4.webp', '/5.webp',
-  '/6.webp', '/7.webp', '/8.webp', '/9.webp', '/10.webp', '/11.webp',
-  '/one_year/DSC04494.webp',
+  `${OPTIMIZED}/0.webp`, `${OPTIMIZED}/1.webp`, `${OPTIMIZED}/2.webp`, `${OPTIMIZED}/3.webp`,
+  `${OPTIMIZED}/4.webp`, `${OPTIMIZED}/5.webp`, `${OPTIMIZED}/6.webp`, `${OPTIMIZED}/7.webp`,
+  `${OPTIMIZED}/8.webp`, `${OPTIMIZED}/9.webp`, `${OPTIMIZED}/10.webp`, `${OPTIMIZED}/11.webp`,
+  `${OPTIMIZED}/one_year/DSC04494.webp`,
 ];
 
 const luxurySpring = { damping: 32, stiffness: 90, mass: 0.6 };
 
-const DETAILS_BG_IMAGE = '/one_year/DSC04510.webp';
+const DETAILS_BG_IMAGE = `${OPTIMIZED}/one_year/DSC04510.webp`;
+const HERO_BG_IMAGE = `${OPTIMIZED}/one_year/DSC04487.webp`;
 
 function InvitationDetailsSection() {
   const { t } = useLanguage();
@@ -71,10 +76,13 @@ function InvitationDetailsSection() {
           className="absolute -top-[30%] left-0 h-[160%] w-full will-change-transform"
           style={{ y: bgY }}
         >
-          <img
+          <Image
             src={DETAILS_BG_IMAGE}
             alt=""
-            className="h-full w-full object-cover object-[32%_center] sm:object-center"
+            fill
+            sizes="100vw"
+            quality={75}
+            className="object-cover object-[32%_center] sm:object-center"
           />
         </motion.div>
       </div>
@@ -163,12 +171,20 @@ function GalleryMosaicCard({
       className={`relative h-full min-h-[280px] w-full overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] ${span} shadow-xl`}
     >
       <div className="absolute inset-0 bg-slate-100/50" />
-      <motion.img
-        src={img}
-        alt={`Zoe moment ${index + 1}`}
-        className="h-full w-full object-cover"
+      <motion.div
         style={{ y }}
-      />
+        className="absolute inset-0 -top-[8%] h-[116%]"
+      >
+        <Image
+          src={img}
+          alt={`Zoe moment ${index + 1}`}
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+          quality={80}
+          loading={index === 0 ? 'eager' : 'lazy'}
+          className="object-cover"
+        />
+      </motion.div>
       <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-80" />
       <div className="absolute bottom-6 left-6 right-6">
         <span className="rounded-full border border-white/30 bg-white/20 px-4 py-1.5 font-sans text-[10px] font-bold uppercase tracking-[0.2em] text-white backdrop-blur-md">
@@ -633,12 +649,17 @@ export default function Home() {
       {/* SECTION 1: Cinematic Editorial Hero Showcase */}
       <section className="relative flex h-[100svh] w-full items-end justify-center overflow-hidden px-4 pb-24 sm:px-6 sm:pb-28">
         <div className="pointer-events-none absolute inset-0 z-0 w-full h-full">
-          <motion.img
-            src="/one_year/DSC04487.webp"
-            alt="Zoe Celebration Opening"
-            className="h-full w-full object-cover object-[center_20%] sm:object-center"
-            style={{ scale: imgScale }}
-          />
+          <motion.div className="relative h-full w-full" style={{ scale: imgScale }}>
+            <Image
+              src={HERO_BG_IMAGE}
+              alt="Zoe Celebration Opening"
+              fill
+              priority
+              sizes="100vw"
+              quality={80}
+              className="object-cover object-[center_20%] sm:object-center"
+            />
+          </motion.div>
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-black/5" />
           <div className="absolute inset-0 bg-gradient-to-r from-black/10 via-transparent to-black/10" />
         </div>

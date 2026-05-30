@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
 
 export type MonthTimelineEntry = {
@@ -104,16 +105,25 @@ function ViewportPanel({
       <div className="relative mt-6 h-[min(48vh,420px)] w-full flex-shrink-0 lg:mt-0 lg:h-[min(72vh,640px)] lg:flex-1">
         <div className="relative h-full w-full overflow-hidden rounded-[32px] border border-pink-200/80 bg-pink-50 shadow-[0_24px_60px_rgba(244,114,182,0.18)]">
           <AnimatePresence mode="wait">
-            <motion.img
+            <motion.div
               key={active.image}
-              src={active.image}
-              alt={`${active.label}: ${active.title}`}
               initial={{ opacity: 0, scale: 1.06 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 1.02 }}
               transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute inset-0 h-full w-full object-cover"
-            />
+              className="absolute inset-0"
+            >
+              <Image
+                src={active.image}
+                alt={`${active.label}: ${active.title}`}
+                fill
+                sizes="(max-width: 1024px) 100vw, 640px"
+                quality={80}
+                priority={activeIndex <= 1}
+                loading={activeIndex <= 1 ? 'eager' : 'lazy'}
+                className="object-cover"
+              />
+            </motion.div>
           </AnimatePresence>
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-pink-950/30 via-transparent to-transparent" />
           <div className="absolute top-4 right-4 rounded-full border border-white/40 bg-black/25 px-3 py-1.5 backdrop-blur-md">
