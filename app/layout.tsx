@@ -20,15 +20,39 @@ const cormorant = Cormorant_Garamond({
   weight: ['300', '400', '500', '600', '700']
 })
 
+const siteUrl = 'https://zoe-mu-ten.vercel.app';
+const ogImage = '/optimized/one_year/DSC04487.webp';
+
 export const metadata: Metadata = {
-  title: 'Baby Girl Birthday Celebration',
+  metadataBase: new URL(siteUrl),
+  title: "Zoe's Birthday",
   description: 'You are cordially invited to celebrate a special milestone',
-  generator: 'v0.app',
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
+  openGraph: {
+    type: 'website',
+    url: siteUrl,
+    title: "Zoe's Birthday",
+    description: 'You are cordially invited to celebrate a special milestone',
+    images: [
+      {
+        url: ogImage,
+        width: 1200,
+        height: 630,
+        alt: "Zoe's first birthday celebration",
+      },
+    ],
   },
-}
+  twitter: {
+    card: 'summary_large_image',
+    title: "Zoe's Birthday",
+    description: 'You are cordially invited to celebrate a special milestone',
+    images: [ogImage],
+  },
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+};
 
 export default function RootLayout({
   children,
