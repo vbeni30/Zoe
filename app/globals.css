@@ -2,8 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --pink-bg: #fff1f8;
+  --pink-bg-soft: #ffe6f3;
+  --pink-pattern: rgba(236, 72, 153, 0.07);
+  --pink-pattern-dots: rgba(244, 114, 182, 0.17);
+}
+
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+  display: none;
 }
 
 * {
@@ -14,9 +27,43 @@ html {
 
 body {
   font-family: 'Lora', serif;
-  background-color: white;
+  background-color: var(--pink-bg);
+  background-image: radial-gradient(circle at 12% 8%, rgba(244, 114, 182, 0.12), transparent 36%);
   color: #1e293b;
   line-height: 1.6;
+  overflow-x: hidden;
+  scrollbar-width: none;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Subtle pink pattern backgrounds — clean, not overwhelming */
+.bg-pattern-pink {
+  background-color: var(--pink-bg);
+  background-image: 
+    radial-gradient(circle at 25% 25%, var(--pink-pattern) 1px, transparent 1px),
+    radial-gradient(circle at 75% 75%, var(--pink-pattern) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.bg-pattern-pink-soft {
+  background-color: #fff4fa;
+  background-image: 
+    radial-gradient(circle at 50% 50%, var(--pink-pattern-dots) 1.5px, transparent 1.5px);
+  background-size: 20px 20px;
+}
+
+.bg-pattern-lines {
+  background-color: var(--pink-bg);
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 20px,
+    var(--pink-pattern) 20px,
+    var(--pink-pattern) 21px
+  );
 }
 
 @layer utilities {

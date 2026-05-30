@@ -1,181 +1,192 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { motion } from 'framer-motion'
+import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion'
 
 export default function IntroPage() {
   const router = useRouter()
   const [isEntering, setIsEntering] = useState(false)
 
+  // Advanced Parallax: Smooth mouse tracking values
+  const mouseX = useMotionValue(0)
+  const mouseY = useMotionValue(0)
+
+  // Smooth springs to dampen the mouse movement for luxury feel
+  const springConfig = { damping: 30, stiffness: 100, mass: 0.5 }
+  const cardX = useSpring(useTransform(mouseX, [-400, 400], [-10, 10]), springConfig)
+  const cardY = useSpring(useTransform(mouseY, [-400, 400], [-10, 10]), springConfig)
+  const bgX = useSpring(useTransform(mouseX, [-400, 400], [20, -20]), springConfig)
+  const bgY = useSpring(useTransform(mouseY, [-400, 400], [20, -20]), springConfig)
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      // Calculate mouse position relative to center of screen
+      const x = e.clientX - window.innerWidth / 2
+      const y = e.clientY - window.innerHeight / 2
+      mouseX.set(x)
+      mouseY.set(y)
+    }
+
+    window.addEventListener('mousemove', handleMouseMove)
+    return () => window.removeEventListener('mousemove', handleMouseMove)
+  }, [mouseX, mouseY])
+
   const handleNavigate = () => {
     setIsEntering(true)
     setTimeout(() => {
       router.push('/main')
-    }, 300)
+    }, 900) // Perfect timing allowance for cinematic zoom
   }
+
+  // Pure procedural decorative items mapped across the layout canvas
+  const floatingElements = [
+    { id: 1, top: '12%', left: '15%', size: 16, delay: 0, speed: 4 },
+    { id: 2, top: '22%', left: '80%', size: 24, delay: 1.5, speed: 6 },
+    { id: 3, top: '75%', left: '12%', size: 20, delay: 0.8, speed: 5 },
+    { id: 4, top: '68%', left: '85%', size: 14, delay: 2.2, speed: 4 },
+    { id: 5, top: '45%', left: '8%', size: 12, delay: 1.2, speed: 7 },
+  ]
 
   return (
     <motion.div
       onClick={handleNavigate}
-      className="relative w-full min-h-screen bg-white overflow-hidden cursor-pointer flex flex-col items-center justify-center px-4"
-      animate={isEntering ? { opacity: 0, scale: 0.95 } : { opacity: 1, scale: 1 }}
-      transition={{ duration: 0.3, ease: 'easeInOut' }}
+      className="relative w-full min-h-screen bg-pattern-pink-soft overflow-hidden cursor-pointer flex flex-col items-center justify-center px-4 select-none"
+      animate={isEntering ? { backgroundColor: '#ffe6f3' } : {}}
+      transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
     >
-      {/* Subtle textured background */}
-      <div className="absolute inset-0 opacity-30" style={{
-        backgroundImage: `
-          repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(236,72,153,.03) 35px, rgba(236,72,153,.03) 70px),
-          repeating-linear-gradient(-45deg, transparent, transparent 35px, rgba(236,72,153,.03) 35px, rgba(236,72,153,.03) 70px)
-        `,
-      }} />
-
-      {/* Birthday-themed decorative elements */}
-      <svg
-        className="absolute inset-0 w-full h-full pointer-events-none"
-        viewBox="0 0 500 1000"
-        preserveAspectRatio="xMidYMid slice"
-      >
-        {/* Birthday Cake - Bottom Left */}
-        <g opacity="0.25">
-          <defs>
-            <linearGradient id="cakeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#ec4899" />
-              <stop offset="100%" stopColor="#db2777" />
-            </linearGradient>
-          </defs>
-          {/* Cake layers */}
-          <rect x="40" y="750" width="60" height="20" rx="2" fill="url(#cakeGradient)" opacity="0.8" />
-          <rect x="35" y="730" width="70" height="20" rx="2" fill="url(#cakeGradient)" opacity="0.6" />
-          <rect x="30" y="710" width="80" height="20" rx="2" fill="url(#cakeGradient)" opacity="0.4" />
-          {/* Frosting swirls */}
-          <path d="M 45 745 Q 50 740 55 745 T 65 745 T 75 745" stroke="#ec4899" strokeWidth="1.5" fill="none" opacity="0.5" />
-        </g>
-
-        {/* Cake Slice - Top Right */}
-        <g opacity="0.25">
-          <path d="M 440 150 L 480 150 L 460 200 Z" fill="#ec4899" opacity="0.6" />
-          <path d="M 440 150 L 460 200 L 450 210 Z" fill="#db2777" opacity="0.4" />
-          {/* Frosting on slice */}
-          <path d="M 442 152 Q 460 175 458 198" stroke="#fbbf24" strokeWidth="1.5" fill="none" opacity="0.5" />
-        </g>
-
-        {/* Number One - Center Left */}
-        <g opacity="0.25">
-          <text x="80" y="450" fontSize="120" fontWeight="bold" fill="#ec4899" fontFamily="Georgia" opacity="0.4">1</text>
-          <circle cx="110" cy="400" r="35" stroke="#ec4899" strokeWidth="1.5" fill="none" opacity="0.3" />
-        </g>
-
-        {/* Single Candle with Flame - Top Left */}
-        <g opacity="0.25">
-          <rect x="50" y="200" width="8" height="50" fill="#f4a460" opacity="0.5" />
-          {/* Candle holder */}
-          <circle cx="54" cy="250" r="12" fill="#ec4899" opacity="0.3" />
-          {/* Flame */}
-          <path d="M 54 190 Q 50 170 54 150 Q 58 170 54 190" fill="#fbbf24" opacity="0.6" />
-          <path d="M 54 190 Q 52 175 54 160 Q 56 175 54 190" fill="#fef3c7" opacity="0.4" />
-        </g>
-
-        {/* Candle 2 - Right side */}
-        <g opacity="0.25">
-          <rect x="420" y="280" width="8" height="45" fill="#f4a460" opacity="0.5" />
-          <circle cx="424" cy="325" r="10" fill="#ec4899" opacity="0.3" />
-          <path d="M 424 273 Q 420 258 424 245 Q 428 258 424 273" fill="#fbbf24" opacity="0.6" />
-        </g>
-
-        {/* Candle 3 - Lower Right */}
-        <g opacity="0.25">
-          <rect x="430" y="580" width="8" height="50" fill="#f4a460" opacity="0.5" />
-          <circle cx="434" cy="630" r="12" fill="#ec4899" opacity="0.3" />
-          <path d="M 434 570 Q 430 550 434 535 Q 438 550 434 570" fill="#fbbf24" opacity="0.6" />
-        </g>
-
-        {/* Balloons - Scattered */}
-        {/* Balloon 1 */}
-        <g opacity="0.25">
-          <circle cx="100" cy="300" r="18" fill="#f472b6" opacity="0.4" />
-          <path d="M 100 318 L 100 360" stroke="#ec4899" strokeWidth="1.5" opacity="0.3" />
-        </g>
-
-        {/* Balloon 2 */}
-        <g opacity="0.25">
-          <circle cx="400" cy="450" r="18" fill="#f472b6" opacity="0.4" />
-          <path d="M 400 468 L 400 510" stroke="#ec4899" strokeWidth="1.5" opacity="0.3" />
-        </g>
-
-        {/* Confetti pieces */}
-        <g opacity="0.2">
-          <rect x="150" y="350" width="4" height="12" fill="#fbbf24" transform="rotate(45 152 356)" />
-          <rect x="350" y="250" width="4" height="12" fill="#f472b6" transform="rotate(-30 352 256)" />
-          <rect x="200" y="600" width="4" height="12" fill="#ec4899" transform="rotate(60 202 606)" />
-          <rect x="380" y="700" width="4" height="12" fill="#fbbf24" transform="rotate(-45 382 706)" />
-        </g>
-      </svg>
-
-      {/* Main content */}
-      <div className="relative z-10 w-full h-screen flex flex-col items-center justify-center px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-center space-y-8"
-        >
-          <motion.h1
-            className="font-playfair text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-light text-pink-600 tracking-tight leading-tight"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, delay: 0.3 }}
-          >
-            You're Invited
-          </motion.h1>
-
-          <motion.div
-            className="h-1 w-20 bg-gradient-to-r from-pink-400 via-pink-500 to-pink-400 mx-auto"
-            initial={{ width: 0 }}
-            animate={{ width: 80 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-          />
-
-          <motion.p
-            className="font-lora text-xl sm:text-2xl md:text-2xl text-pink-500/85 font-light tracking-wide max-w-2xl mx-auto leading-relaxed"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
-          >
-            to a celebration of elegance and precious moments
-          </motion.p>
-
-          {/* <motion.div
-            className="pt-12"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 1.2 }}
-          >
-            <p className="font-lora text-sm md:text-base text-pink-400/70 uppercase tracking-[0.15em] font-light">
-              Click anywhere to continue
-            </p>
-          </motion.div> */}
-        </motion.div>
+      {/* Dynamic Parallax Lighting Blobs using your exact CSS variables */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div 
+          style={{ backgroundColor: 'var(--pink-bg-soft)', x: bgX, y: bgY }}
+          animate={{ scale: [1, 1.1, 1] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute -top-[10%] -left-[5%] w-[50vw] h-[50vw] rounded-full opacity-60 blur-[100px]" 
+        />
+        <motion.div 
+          style={{ backgroundColor: 'var(--pink-bg-soft)', x: bgY, y: bgX }} // inverted pathing for natural depth contrast
+          animate={{ scale: [1, 1.15, 1] }}
+          transition={{ duration: 14, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          className="absolute -bottom-[15%] -right-[5%] w-[60vw] h-[60vw] rounded-full opacity-70 blur-[120px]" 
+        />
       </div>
 
-      {/* Floating animation indicator */}
+      {/* Procedural Flurry System - replaces raw SVGs with elegant floating sparkles */}
+      {floatingElements.map((elem) => (
+        <motion.div
+          key={elem.id}
+          className="absolute pointer-events-none text-pink-400/30"
+          style={{ top: elem.top, left: elem.left }}
+          animate={{
+            y: [0, -25, 0],
+            x: [0, 10, 0],
+            opacity: [0.2, 0.6, 0.2],
+            rotate: [0, 180, 360]
+          }}
+          transition={{
+            duration: elem.speed + 3,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: elem.delay,
+          }}
+        >
+          <svg width={elem.size} height={elem.size} viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0L14.6 9.4L24 12L14.6 14.6L12 24L9.4 14.6L0 12L9.4 9.4Z" />
+          </svg>
+        </motion.div>
+      ))}
+
+      {/* The Central Premium Vellum Invitation Container */}
       <motion.div
-        className="absolute bottom-8 sm:bottom-12 transform -translate-x-1/2 z-20"
-        animate={{ y: [0, 10, 0] }}
-        transition={{ duration: 2, repeat: Infinity }}
+        style={{ x: cardX, y: cardY }}
+        animate={isEntering ? { scale: 1.1, opacity: 0, filter: 'blur(8px)' } : { scale: 1, opacity: 1 }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className="relative z-10 max-w-2xl w-full mx-auto"
       >
-        <div className="text-pink-300/50 text-center">
-          <p className="font-lora text-sm tracking-[0.12em] font-light">CLICK TO ENTER</p>
+        {/* Layered Translucent Card Panel */}
+        <div className="backdrop-blur-md bg-white/40 border border-white/70 rounded-[40px] px-6 py-16 sm:p-20 text-center shadow-[0_20px_50px_rgba(244,114,182,0.1)] flex flex-col items-center gap-8 group transition-all duration-500 hover:border-pink-300/40 hover:shadow-[0_24px_60px_rgba(244,114,182,0.15)]">
+          
+          {/* Minimalist Crest Ornament */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.6 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.3, duration: 1 }}
+            className="w-10 h-10 rounded-full border border-pink-300/40 flex items-center justify-center text-pink-500/60 text-sm font-light shadow-inner"
+          >
+            ✧
+          </motion.div>
+
+          {/* Core Invitation Header Typography */}
+          <div className="space-y-4">
+            <motion.p
+              initial={{ letterSpacing: "0.2em", opacity: 0 }}
+              animate={{ letterSpacing: "0.3em", opacity: 0.5 }}
+              transition={{ delay: 0.2, duration: 1.2 }}
+              className="text-xs uppercase font-sans tracking-[0.25em] text-slate-500 font-semibold text-balance"
+            >
+              The Honor of Your Presence is Requested
+            </motion.p>
+            
+            <motion.h1
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 1 }}
+              className="font-serif text-5xl sm:text-7xl md:text-8xl font-normal text-slate-8xl text-transparent bg-clip-text bg-gradient-to-b from-slate-800 to-pink-900 tracking-tight leading-none text-balance"
+            >
+              You’re Invited
+            </motion.h1>
+          </div>
+
+          {/* Premium Tailored Line Separator */}
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: 80 }}
+            transition={{ duration: 1.2, delay: 0.7 }}
+            className="h-[1px] bg-gradient-to-r from-transparent via-pink-400/60 to-transparent"
+          />
+
+          {/* Descriptive Invite Prompt */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.8 }}
+            transition={{ duration: 1, delay: 0.9 }}
+            className="font-serif italic text-xl sm:text-2xl text-slate-600 font-light max-w-md mx-auto leading-relaxed text-balance"
+          >
+            to celebrate beautiful moments, sweet laughter, and a magical path forward
+          </motion.p>
         </div>
       </motion.div>
 
-      {/* Hover effect overlay */}
+      {/* Modern, Floating Bottom Call-To-Action Affordance */}
       <motion.div
-        className="absolute inset-0 bg-gradient-to-b from-transparent to-pink-200/5 pointer-events-none"
+        className="absolute bottom-12 left-1/2 transform -translate-x-1/2 z-20 flex flex-col items-center gap-3"
         initial={{ opacity: 0 }}
-        animate={{ opacity: isEntering ? 0 : 0 }}
-        transition={{ duration: 0.3 }}
-      />
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.2 }}
+      >
+        <motion.div
+          animate={{ y: [0, 5, 0] }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+          className="flex flex-col items-center gap-2"
+        >
+          <span className="font-sans text-[10px] tracking-[0.35em] uppercase text-pink-600/70 font-semibold">
+            Tap anywhere to open
+          </span>
+          <svg 
+            width="12" 
+            height="12" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            className="text-pink-400/80"
+            strokeWidth="2" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+          >
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </motion.div>
+      </motion.div>
     </motion.div>
   )
 }

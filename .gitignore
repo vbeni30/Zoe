@@ -8,3 +8,11 @@ node_modules/
 .next/
 .env*.local
 .DS_Store
+data/rsvps.json
+
+# Large camera originals — use .webp in the repo instead
+public/**/*.JPG
+public/**/*.jpg
+public/**/*.jpeg
+public/**/*.HEIC
+public/**/*.heic

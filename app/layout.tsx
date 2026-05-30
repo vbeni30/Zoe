@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Playfair_Display, Lora, Cormorant_Garamond } from 'next/font/google'
 
+import { LanguageProvider } from '@/context/LanguageContext'
 import './globals.css'
 
 const playfair = Playfair_Display({ 
@@ -37,7 +38,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${playfair.variable} ${lora.variable} ${cormorant.variable}`}>
       <body className="font-lora antialiased text-slate-900/90">
-        {children}
+        <LanguageProvider>
+          {children}
+        </LanguageProvider>
       </body>
     </html>
   )
