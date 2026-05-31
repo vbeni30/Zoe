@@ -1,17 +1,6 @@
-import nodemailer from 'nodemailer';
-
 import type { RsvpEntry } from './rsvp-types';
 
-const NOTIFY_EMAIL = process.env.RSVP_NOTIFY_EMAIL ?? 'abenidemiss300@gmail.com';
-
-function escapeHtml(value: string): string {
-  return value
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;');
-}
+const WEB3FORMS_URL = 'https://api.web3forms.com/submit';
 
 function attendingLabel(attending: RsvpEntry['attending']): string {
   if (attending === 'yes') return 'Yes';
@@ -19,71 +8,65 @@ function attendingLabel(attending: RsvpEntry['attending']): string {
   return 'Maybe';
 }
 
-function buildEmailHtml(rsvps: RsvpEntry[]): string {
-  const rows = rsvps
+function buildGuestListText(rsvps: RsvpEntry[]): string {
+  return rsvps
     .map(
-      (rsvp, index) => `
-        <tr>
-          <td style="padding:10px 12px;border-bottom:1px solid #fce7f3;text-align:center;">${index + 1}</td>
-          <td style="padding:10px 12px;border-bottom:1px solid #fce7f3;">${escapeHtml(rsvp.name)}</td>
-          <td style="padding:10px 12px;border-bottom:1px solid #fce7f3;">${escapeHtml(rsvp.email)}</td>
-          <td style="padding:10px 12px;border-bottom:1px solid #fce7f3;text-align:center;">${escapeHtml(rsvp.guests)}</td>
-          <td style="padding:10px 12px;border-bottom:1px solid #fce7f3;">${attendingLabel(rsvp.attending)}</td>
-          <td style="padding:10px 12px;border-bottom:1px solid #fce7f3;">${escapeHtml(rsvp.dietary || '—')}</td>
-          <td style="padding:10px 12px;border-bottom:1px solid #fce7f3;white-space:nowrap;">${new Date(rsvp.submittedAt).toLocaleString()}</td>
-        </tr>
-      `,
+      (rsvp, index) =>
+        `${index + 1}. ${rsvp.name} | ${rsvp.email} | ${rsvp.guests} guest(s) | ${attendingLabel(rsvp.attending)} | ${new Date(rsvp.submittedAt).toLocaleString()}`,
     )
-    .join('');
-
-  const latest = rsvps[rsvps.length - 1];
-
-  return `
-    <div style="font-family:Georgia,serif;color:#334155;max-width:900px;margin:0 auto;">
-      <h1 style="color:#be185d;font-weight:400;margin-bottom:8px;">Zoe's First Birthday RSVPs</h1>
-      <p style="margin-top:0;color:#64748b;">
-        New response from <strong>${escapeHtml(latest.name)}</strong>.
-        Full guest list below (${rsvps.length} total).
-      </p>
-      <table style="width:100%;border-collapse:collapse;background:#fff;border:1px solid #fbcfe8;border-radius:12px;overflow:hidden;">
-        <thead>
-          <tr style="background:#fdf2f8;">
-            <th style="padding:12px;text-align:left;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#be185d;">#</th>
-            <th style="padding:12px;text-align:left;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#be185d;">Name</th>
-            <th style="padding:12px;text-align:left;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#be185d;">Email</th>
-            <th style="padding:12px;text-align:left;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#be185d;">Guests</th>
-            <th style="padding:12px;text-align:left;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#be185d;">Attending</th>
-            <th style="padding:12px;text-align:left;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#be185d;">Dietary</th>
-            <th style="padding:12px;text-align:left;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#be185d;">Submitted</th>
-          </tr>
-        </thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </div>
-  `;
+    .join('\n');
 }
 
 export async function sendRsvpDigestEmail(rsvps: RsvpEntry[]): Promise<void> {
-  const gmailUser = process.env.GMAIL_USER;
-  const gmailAppPassword = process.env.GMAIL_APP_PASSWORD;
+  const accessKey = process.env.WEB3FORMS_ACCESS_KEY;
+  const notifyEmail = process.env.RSVP_NOTIFICATION_EMAIL;
 
-  if (!gmailUser || !gmailAppPassword) {
-    throw new Error('Gmail credentials are not configured');
+  if (!accessKey) {
+    throw new Error('Web3Forms access key is not configured (WEB3FORMS_ACCESS_KEY)');
+  }
+
+  if (!notifyEmail) {
+    throw new Error('RSVP notification email is not configured (RSVP_NOTIFICATION_EMAIL)');
   }
 
   const latest = rsvps[rsvps.length - 1];
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: gmailUser,
-      pass: gmailAppPassword,
+
+  const message = [
+    `New RSVP from ${latest.name}`,
+    '',
+    'Latest response',
+    `Name: ${latest.name}`,
+    `Email: ${latest.email}`,
+    `Attending: ${attendingLabel(latest.attending)}`,
+    `Guests: ${latest.guests}`,
+    '',
+    `All RSVPs (${rsvps.length} total):`,
+    buildGuestListText(rsvps),
+  ].join('\n');
+
+  const response = await fetch(WEB3FORMS_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
     },
+    body: JSON.stringify({
+      access_key: accessKey,
+      to: notifyEmail,
+      subject: `Zoe's Birthday RSVP #${rsvps.length}: ${latest.name}`,
+      from_name: "Zoe's Birthday RSVP",
+      name: latest.name,
+      email: latest.email,
+      replyto: latest.email,
+      attending: attendingLabel(latest.attending),
+      guests: latest.guests,
+      message,
+    }),
   });
 
-  await transporter.sendMail({
-    from: `"Zoe Birthday RSVP" <${gmailUser}>`,
-    to: NOTIFY_EMAIL,
-    subject: `Zoe's Birthday RSVP #${rsvps.length}: ${latest.name} (${rsvps.length} on the list)`,
-    html: buildEmailHtml(rsvps),
-  });
+  const result = (await response.json()) as { success?: boolean; message?: string };
+
+  if (!response.ok || !result.success) {
+    throw new Error(result.message ?? 'Web3Forms submission failed');
+  }
 }

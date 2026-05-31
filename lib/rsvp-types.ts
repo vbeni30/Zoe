@@ -4,7 +4,6 @@ export type RsvpEntry = {
   email: string;
   guests: string;
   attending: 'yes' | 'no' | 'maybe';
-  dietary: string;
   submittedAt: string;
 };
 
@@ -13,5 +12,4 @@ export type RsvpFormPayload = {
   email: string;
   guests: string;
   attending: 'yes' | 'no' | 'maybe';
-  dietary: string;
 };

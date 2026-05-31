@@ -9,7 +9,6 @@ const rsvpSchema = z.object({
   email: z.string().trim().email('Valid email is required').max(200),
   guests: z.enum(['1', '2', '3', '4', '5']),
   attending: z.enum(['yes', 'no', 'maybe']),
-  dietary: z.string().trim().max(500).optional().default(''),
 });
 
 export async function POST(request: Request) {
@@ -35,8 +34,11 @@ export async function POST(request: Request) {
     console.error('RSVP submission failed:', error);
 
     const message =
-      error instanceof Error && error.message.includes('Gmail credentials')
-        ? 'Email is not configured on the server yet.'
+      error instanceof Error &&
+      (error.message.includes('Web3Forms') ||
+        error.message.includes('WEB3FORMS') ||
+        error.message.includes('RSVP_NOTIFICATION'))
+        ? 'RSVP email is not configured on the server yet.'
         : 'Unable to submit RSVP right now. Please try again.';
 
     return NextResponse.json({ error: message }, { status: 500 });

@@ -10,12 +10,11 @@ export default function RSVP() {
     email: '',
     guests: '1',
     attending: 'yes',
-    dietary: '',
   })
 
   const [submitted, setSubmitted] = useState(false)
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({
       ...prev,
@@ -27,7 +26,7 @@ export default function RSVP() {
     e.preventDefault()
     setSubmitted(true)
     setTimeout(() => {
-      setFormData({ name: '', email: '', guests: '1', attending: 'yes', dietary: '' })
+      setFormData({ name: '', email: '', guests: '1', attending: 'yes' })
       setSubmitted(false)
     }, 3000)
   }
@@ -154,26 +153,6 @@ export default function RSVP() {
                     ))}
                   </select>
                 </div>
-              </motion.div>
-
-              {/* Dietary Preferences */}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.25 }}
-                viewport={{ once: true }}
-              >
-                <label className="block font-playfair text-lg font-semibold text-foreground mb-3">
-                  Dietary Preferences (Optional)
-                </label>
-                <textarea
-                  name="dietary"
-                  value={formData.dietary}
-                  onChange={handleChange}
-                  className="w-full px-6 py-3 rounded-xl border border-border bg-background text-foreground focus:outline-none focus:border-primary transition-colors font-lora"
-                  placeholder="Any dietary restrictions or allergies we should know about?"
-                  rows={3}
-                />
               </motion.div>
 
               {/* Submit Button */}

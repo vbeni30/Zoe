@@ -11,8 +11,8 @@ import {
   useMotionValue
 } from 'framer-motion';
 import { 
-  Calendar, Clock, MapPin, Heart, Sparkles, ChevronDown, 
-  Send, User, Mail, Utensils, Minus, Plus, Loader2, CheckCircle2 
+  Calendar, Clock, MapPin, Shirt, Heart, Sparkles, ChevronDown, 
+  Send, User, Mail, Minus, Plus, Loader2, CheckCircle2 
 } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import LanguageSelector from '@/components/LanguageSelector';
@@ -20,6 +20,7 @@ import SectionWithPattern from '@/components/SectionWithPattern';
 import SectionHeading from '@/components/SectionHeading';
 import ContentWrap from '@/components/ContentWrap';
 import FirstYearStickyScroll from '@/components/FirstYearStickyScroll';
+import FullYearGallery from '@/components/FullYearGallery';
 
 const OPTIMIZED = '/optimized';
 
@@ -80,8 +81,8 @@ function InvitationDetailsSection() {
             src={DETAILS_BG_IMAGE}
             alt=""
             fill
+            unoptimized
             sizes="100vw"
-            quality={75}
             className="object-cover object-[32%_center] sm:object-center"
           />
         </motion.div>
@@ -101,7 +102,7 @@ function InvitationDetailsSection() {
       >
         <SectionHeading eyebrow={t.theDetails} title={t.youAreInvited} variant="light" />
 
-        <div className="mt-6 grid grid-cols-1 gap-3 min-[520px]:mt-8 min-[520px]:grid-cols-2 min-[520px]:gap-4 min-[520px]:max-w-none sm:mt-12 sm:gap-5 lg:mt-14 lg:grid-cols-3 lg:gap-8">
+        <div className="mt-6 grid grid-cols-1 gap-3 min-[520px]:mt-8 min-[520px]:grid-cols-2 min-[520px]:gap-4 min-[520px]:max-w-none sm:mt-12 sm:gap-5 lg:mt-14 lg:grid-cols-2 xl:grid-cols-4 xl:gap-6">
           <motion.div whileHover={{ y: -4 }} className={detailCardClass}>
             <div className="pointer-events-none absolute inset-0 rounded-[inherit] bg-gradient-to-br from-white/20 via-white/5 to-transparent" aria-hidden />
             <div className={detailIconClass}>
@@ -120,9 +121,18 @@ function InvitationDetailsSection() {
             <p className={detailValueClass}>{t.eventTime}</p>
           </motion.div>
 
+          <motion.div whileHover={{ y: -4 }} className={detailCardClass}>
+            <div className="pointer-events-none absolute inset-0 rounded-[inherit] bg-gradient-to-br from-white/20 via-white/5 to-transparent" aria-hidden />
+            <div className={detailIconClass}>
+              <Shirt className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 lg:h-7 lg:w-7" strokeWidth={1.5} />
+            </div>
+            <h3 className={detailLabelClass}>{t.dressCode}</h3>
+            <p className={detailValueClass}>{t.dressCodeValue}</p>
+          </motion.div>
+
           <motion.div
             whileHover={{ y: -4 }}
-            className={`${detailCardClass} min-[520px]:col-span-2 min-[520px]:max-w-md lg:col-span-1 lg:max-w-none`}
+            className={`${detailCardClass} min-[520px]:col-span-2 xl:col-span-1 xl:max-w-none`}
           >
             <div className="pointer-events-none absolute inset-0 rounded-[inherit] bg-gradient-to-br from-white/20 via-white/5 to-transparent" aria-hidden />
             <div className={detailIconClass}>
@@ -200,7 +210,7 @@ function GalleryMosaicCard({
    ========================================================================= */
 function RSVPSection() {
   const { t } = useLanguage();
-  const [formData, setFormData] = useState({ name: '', email: '', guests: '1', attending: 'yes', dietary: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', guests: '1', attending: 'yes' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -230,7 +240,7 @@ function RSVPSection() {
     y.set(0);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -263,7 +273,7 @@ function RSVPSection() {
 
       setSubmitted(true);
       setTimeout(() => {
-        setFormData({ name: '', email: '', guests: '1', attending: 'yes', dietary: '' });
+        setFormData({ name: '', email: '', guests: '1', attending: 'yes' });
         setSubmitted(false);
       }, 6000);
     } catch (error) {
@@ -430,67 +440,45 @@ function RSVPSection() {
                       </div>
                     </motion.div>
 
-                    <div className="grid grid-cols-1 gap-8 md:grid-cols-2 items-start">
-                      {/* Guest Counter */}
-                      <motion.div variants={itemVariants} className="space-y-3">
-                        <label className="block pl-2 font-sans text-[11px] font-bold uppercase tracking-[0.25em] text-slate-400">
-                          {t.numberOfGuests}
-                        </label>
-                        <div className="flex items-center justify-between rounded-3xl border border-white/50 bg-white/50 p-2 shadow-[inset_0_2px_10px_rgba(0,0,0,0.02)] backdrop-blur-md transition-all duration-300 hover:bg-white/70">
-                          <button
-                            type="button"
-                            onClick={() => handleGuestChange(-1)}
-                            disabled={formData.guests === '1'}
-                            className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-slate-400 shadow-sm transition-all duration-300 hover:text-pink-500 hover:shadow-md hover:scale-105 disabled:opacity-40 disabled:hover:scale-100"
-                          >
-                            <Minus className="h-4 w-4" />
-                          </button>
-                          
-                          <div className="flex flex-col items-center justify-center w-20">
-                            <motion.span 
-                              key={formData.guests}
-                              initial={{ opacity: 0, y: -10 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              className="font-serif text-2xl text-slate-800"
-                            >
-                              {formData.guests}
-                            </motion.span>
-                            <span className="font-sans text-[9px] uppercase tracking-widest text-pink-400 font-bold -mt-1">
-                              {parseInt(formData.guests) === 1 ? t.guest : t.guests}
-                            </span>
-                          </div>
+                    {/* Guest Counter */}
+                    <motion.div variants={itemVariants} className="mx-auto max-w-sm space-y-3">
+                      <label className="block pl-2 text-center font-sans text-[11px] font-bold uppercase tracking-[0.25em] text-slate-400 sm:text-left">
+                        {t.numberOfGuests}
+                      </label>
+                      <div className="flex items-center justify-between rounded-3xl border border-white/50 bg-white/50 p-2 shadow-[inset_0_2px_10px_rgba(0,0,0,0.02)] backdrop-blur-md transition-all duration-300 hover:bg-white/70">
+                        <button
+                          type="button"
+                          onClick={() => handleGuestChange(-1)}
+                          disabled={formData.guests === '1'}
+                          className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-slate-400 shadow-sm transition-all duration-300 hover:text-pink-500 hover:shadow-md hover:scale-105 disabled:opacity-40 disabled:hover:scale-100"
+                        >
+                          <Minus className="h-4 w-4" />
+                        </button>
 
-                          <button
-                            type="button"
-                            onClick={() => handleGuestChange(1)}
-                            disabled={formData.guests === '5'}
-                            className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-slate-400 shadow-sm transition-all duration-300 hover:text-pink-500 hover:shadow-md hover:scale-105 disabled:opacity-40 disabled:hover:scale-100"
+                        <div className="flex w-20 flex-col items-center justify-center">
+                          <motion.span
+                            key={formData.guests}
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="font-serif text-2xl text-slate-800"
                           >
-                            <Plus className="h-4 w-4" />
-                          </button>
+                            {formData.guests}
+                          </motion.span>
+                          <span className="-mt-1 font-sans text-[9px] font-bold uppercase tracking-widest text-pink-400">
+                            {parseInt(formData.guests) === 1 ? t.guest : t.guests}
+                          </span>
                         </div>
-                      </motion.div>
 
-                      {/* Dietary Textarea */}
-                      <motion.div variants={itemVariants} className="space-y-3">
-                        <label className="flex items-center gap-2 pl-2 font-sans text-[11px] font-bold uppercase tracking-[0.25em] text-slate-400">
-                          {t.dietaryPrefs}
-                        </label>
-                        <div className="relative group h-[74px]">
-                          <div className="absolute top-4 left-5 text-slate-300 transition-colors duration-500 group-focus-within:text-pink-500 z-10">
-                            <Utensils className="h-5 w-5" strokeWidth={1.5} />
-                          </div>
-                          <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-pink-300 to-rose-300 opacity-0 blur-md transition-opacity duration-500 group-focus-within:opacity-30" />
-                          <textarea
-                            name="dietary"
-                            value={formData.dietary}
-                            onChange={handleChange}
-                            className="relative h-full w-full resize-none rounded-3xl border border-white/50 bg-white/50 pl-14 pr-6 py-4.5 font-serif text-base text-slate-800 shadow-[inset_0_2px_10px_rgba(0,0,0,0.02)] placeholder-slate-300 backdrop-blur-md transition-all duration-300 hover:bg-white/70 focus:border-pink-300 focus:bg-white focus:outline-none scrollbar-hide"
-                            placeholder={t.dietaryPlaceholder}
-                          />
-                        </div>
-                      </motion.div>
-                    </div>
+                        <button
+                          type="button"
+                          onClick={() => handleGuestChange(1)}
+                          disabled={formData.guests === '5'}
+                          className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-slate-400 shadow-sm transition-all duration-300 hover:text-pink-500 hover:shadow-md hover:scale-105 disabled:opacity-40 disabled:hover:scale-100"
+                        >
+                          <Plus className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </motion.div>
 
                     <motion.div variants={itemVariants} className="pt-4">
                       {submitError && (
@@ -602,7 +590,13 @@ function RSVPSection() {
           </motion.div>
 
           <p className="mt-12 text-center font-sans text-[10px] uppercase tracking-[0.3em] text-slate-400 font-semibold">
-            {t.questionsContact}
+            {t.questionsContact}{' '}
+            <a
+              href={`mailto:${t.contactEmail}`}
+              className="text-pink-500 transition-colors hover:text-pink-600"
+            >
+              {t.contactEmail}
+            </a>
           </p>
         </motion.div>
       </ContentWrap>
@@ -615,6 +609,7 @@ function RSVPSection() {
    ========================================================================= */
 export default function Home() {
   const { t } = useLanguage();
+  const [fullGalleryOpen, setFullGalleryOpen] = useState(false);
   const containerRef = useRef<HTMLElement | null>(null);
   
   const { scrollYProgress } = useScroll({
@@ -628,18 +623,18 @@ export default function Home() {
   const heroTextOpacity = useTransform(scrollYProgress, [0, 0.4], [1, 0]);
 
   const monthTimeline = [
-    { label: `${t.month} 0`, title: t.month1, image: MONTH_TIMELINE_IMAGES[0], progress: 8 },
-    { label: `${t.month} 1`, title: t.month2, image: MONTH_TIMELINE_IMAGES[1], progress: 16 },
-    { label: `${t.month} 2`, title: t.month3, image: MONTH_TIMELINE_IMAGES[2], progress: 24 },
-    { label: `${t.month} 3`, title: t.month4, image: MONTH_TIMELINE_IMAGES[3], progress: 32 },
-    { label: `${t.month} 4`, title: t.month5, image: MONTH_TIMELINE_IMAGES[4], progress: 40 },
-    { label: `${t.month} 5`, title: t.month6, image: MONTH_TIMELINE_IMAGES[5], progress: 48 },
-    { label: `${t.month} 6`, title: t.month7, image: MONTH_TIMELINE_IMAGES[6], progress: 56 },
-    { label: `${t.month} 7`, title: t.month8, image: MONTH_TIMELINE_IMAGES[7], progress: 64 },
-    { label: `${t.month} 8`, title: t.month9, image: MONTH_TIMELINE_IMAGES[8], progress: 72 },
-    { label: `${t.month} 9`, title: t.month10, image: MONTH_TIMELINE_IMAGES[9], progress: 80 },
-    { label: `${t.month} 10`, title: t.month11, image: MONTH_TIMELINE_IMAGES[10], progress: 88 },
-    { label: `${t.month} 11`, title: t.month12, image: MONTH_TIMELINE_IMAGES[11], progress: 96 },
+    { label: `${t.month} 1`, title: t.month1, image: MONTH_TIMELINE_IMAGES[0], progress: 8 },
+    { label: `${t.month} 2`, title: t.month2, image: MONTH_TIMELINE_IMAGES[1], progress: 16 },
+    { label: `${t.month} 3`, title: t.month3, image: MONTH_TIMELINE_IMAGES[2], progress: 24 },
+    { label: `${t.month} 4`, title: t.month4, image: MONTH_TIMELINE_IMAGES[3], progress: 32 },
+    { label: `${t.month} 5`, title: t.month5, image: MONTH_TIMELINE_IMAGES[4], progress: 40 },
+    { label: `${t.month} 6`, title: t.month6, image: MONTH_TIMELINE_IMAGES[5], progress: 48 },
+    { label: `${t.month} 7`, title: t.month7, image: MONTH_TIMELINE_IMAGES[6], progress: 56 },
+    { label: `${t.month} 8`, title: t.month8, image: MONTH_TIMELINE_IMAGES[7], progress: 64 },
+    { label: `${t.month} 9`, title: t.month9, image: MONTH_TIMELINE_IMAGES[8], progress: 72 },
+    { label: `${t.month} 10`, title: t.month10, image: MONTH_TIMELINE_IMAGES[9], progress: 80 },
+    { label: `${t.month} 11`, title: t.month11, image: MONTH_TIMELINE_IMAGES[10], progress: 88 },
+    { label: `${t.month} 12`, title: t.month12, image: MONTH_TIMELINE_IMAGES[11], progress: 96 },
     { label: '1 Year', title: t.celebratingOneYear, image: MONTH_TIMELINE_IMAGES[12], progress: 100 },
   ];
 
@@ -655,8 +650,8 @@ export default function Home() {
               alt="Zoe Celebration Opening"
               fill
               priority
+              unoptimized
               sizes="100vw"
-              quality={80}
               className="object-cover object-[center_20%] sm:object-center"
             />
           </motion.div>
@@ -770,6 +765,7 @@ export default function Home() {
             <div className="mt-12 text-center sm:mt-16">
               <motion.button
                 type="button"
+                onClick={() => setFullGalleryOpen(true)}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="inline-flex items-center gap-3 rounded-full border border-slate-200 bg-white px-6 py-3.5 font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-slate-600 shadow-sm transition-all hover:border-pink-200 hover:bg-pink-50 hover:text-pink-600 sm:px-8 sm:py-4"
@@ -779,9 +775,11 @@ export default function Home() {
             </div>
           </div>
         </SectionWithPattern>
+
+        <FullYearGallery open={fullGalleryOpen} onOpenChange={setFullGalleryOpen} />
       </ContentWrap>
 
-      {/* SECTION 3: The First Year Timeline (outside ContentWrap for sticky scroll) */}
+      {/* SECTION 3: The First Year Timeline */}
       <div className="relative overflow-visible bg-pattern-pink-soft py-16 sm:py-24 lg:py-32">
         <div className="mx-auto mb-12 max-w-2xl px-4 text-center sm:mb-16 sm:px-6 lg:max-w-7xl">
           <SectionHeading eyebrow={t.ourJourney} title={t.theFirstYear} />
