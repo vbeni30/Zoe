@@ -126,14 +126,23 @@ export default function IntroPage() {
             >
               The Honor of Your Presence is Requested
             </motion.p>
+
+            <motion.p
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.35, duration: 0.9 }}
+              className="font-sans text-sm font-semibold uppercase tracking-[0.35em] text-pink-600/90 sm:text-base"
+            >
+              Zoe&apos;s First Birthday
+            </motion.p>
             
             <motion.h1
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 1 }}
-              className="font-serif text-5xl sm:text-7xl md:text-8xl font-normal text-slate-8xl text-transparent bg-clip-text bg-gradient-to-b from-slate-800 to-pink-900 tracking-tight leading-none text-balance"
+              className="font-serif text-5xl sm:text-7xl md:text-8xl font-normal text-transparent bg-clip-text bg-gradient-to-b from-slate-800 to-pink-900 tracking-tight leading-none text-balance"
             >
-              You’re Invited
+              You&apos;re Invited to Celebrate
             </motion.h1>
           </div>
 
@@ -152,14 +161,14 @@ export default function IntroPage() {
             transition={{ duration: 1, delay: 0.9 }}
             className="font-serif italic text-xl sm:text-2xl text-slate-600 font-light max-w-md mx-auto leading-relaxed text-balance"
           >
-            to celebrate beautiful moments, sweet laughter, and a magical path forward
+            Join us as we celebrate Zoe turning one — a year of love, laughter, and beautiful memories
           </motion.p>
         </div>
       </motion.div>
 
       {/* Modern, Floating Bottom Call-To-Action Affordance */}
       <motion.div
-        className="absolute bottom-12 left-1/2 transform -translate-x-1/2 z-20 flex flex-col items-center gap-3"
+        className="absolute inset-x-0 bottom-12 z-20 flex flex-col items-center justify-center px-4"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.2 }}
@@ -167,9 +176,9 @@ export default function IntroPage() {
         <motion.div
           animate={{ y: [0, 5, 0] }}
           transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-          className="flex flex-col items-center gap-2"
+          className="flex w-full max-w-xs flex-col items-center gap-2 text-center"
         >
-          <span className="font-sans text-[10px] tracking-[0.35em] uppercase text-pink-600/70 font-semibold">
+          <span className="w-full text-center font-sans text-[10px] font-semibold uppercase tracking-[0.35em] text-pink-600/70">
             Tap anywhere to open
           </span>
           <svg 

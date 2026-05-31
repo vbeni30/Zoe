@@ -5,7 +5,15 @@ import path from 'path';
 import type { RsvpEntry, RsvpFormPayload } from './rsvp-types';
 
 const RSVPS_KEY = 'zoe-birthday-rsvps';
-const DATA_FILE = path.join(process.cwd(), 'data', 'rsvps.json');
+
+function getDataFile(): string {
+  // Vercel serverless only allows writes under /tmp.
+  if (process.env.VERCEL) {
+    return path.join('/tmp', 'rsvps.json');
+  }
+
+  return path.join(process.cwd(), 'data', 'rsvps.json');
+}
 
 function getRedis(): Redis | null {
   const url = process.env.UPSTASH_REDIS_REST_URL;
@@ -19,8 +27,10 @@ function getRedis(): Redis | null {
 }
 
 async function readFromFile(): Promise<RsvpEntry[]> {
+  const dataFile = getDataFile();
+
   try {
-    const raw = await readFile(DATA_FILE, 'utf-8');
+    const raw = await readFile(dataFile, 'utf-8');
     const parsed = JSON.parse(raw) as RsvpEntry[];
     return Array.isArray(parsed) ? parsed : [];
   } catch {
@@ -29,8 +39,9 @@ async function readFromFile(): Promise<RsvpEntry[]> {
 }
 
 async function writeToFile(entries: RsvpEntry[]): Promise<void> {
-  await mkdir(path.dirname(DATA_FILE), { recursive: true });
-  await writeFile(DATA_FILE, JSON.stringify(entries, null, 2), 'utf-8');
+  const dataFile = getDataFile();
+  await mkdir(path.dirname(dataFile), { recursive: true });
+  await writeFile(dataFile, JSON.stringify(entries, null, 2), 'utf-8');
 }
 
 export async function getAllRsvps(): Promise<RsvpEntry[]> {
@@ -57,9 +68,15 @@ export async function addRsvp(payload: RsvpFormPayload): Promise<RsvpEntry[]> {
   const redis = getRedis();
   if (redis) {
     await redis.set(RSVPS_KEY, all);
-  } else {
-    await writeToFile(all);
+    return all;
   }
 
-  return all;
+  try {
+    await writeToFile(all);
+    return all;
+  } catch (error) {
+    console.error('RSVP file storage failed:', error);
+    // Still return the new entry so email can be sent on serverless.
+    return [entry];
+  }
 }

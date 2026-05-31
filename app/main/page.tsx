@@ -21,6 +21,19 @@ import SectionHeading from '@/components/SectionHeading';
 import ContentWrap from '@/components/ContentWrap';
 import FirstYearStickyScroll from '@/components/FirstYearStickyScroll';
 import FullYearGallery from '@/components/FullYearGallery';
+import type { translations } from '@/lib/translations';
+
+type TranslationStrings = (typeof translations)['en'];
+
+function getTimelineTitle(index: number, t: TranslationStrings): string {
+  if (index === 12) return t.celebratingOneYear;
+  if (index === 0) return t.month1;
+  const monthKey = `month${index}` as keyof TranslationStrings;
+  if (monthKey in t && typeof t[monthKey] === 'string') {
+    return t[monthKey] as string;
+  }
+  return t.month12;
+}
 
 const OPTIMIZED = '/optimized';
 
@@ -29,6 +42,7 @@ const GALLERY_BENTO_IMAGES = [
   `${OPTIMIZED}/smile.webp`,
   `${OPTIMIZED}/playing.webp`,
   `${OPTIMIZED}/9.webp`,
+  '/IMG_1031.webp',
 ] as const;
 
 const MONTH_TIMELINE_IMAGES = [
@@ -622,21 +636,12 @@ export default function Home() {
   const heroTextY = useTransform(scrollYProgress, [0, 0.4], [0, 40]);
   const heroTextOpacity = useTransform(scrollYProgress, [0, 0.4], [1, 0]);
 
-  const monthTimeline = [
-    { label: `${t.month} 0`, title: t.month1, image: MONTH_TIMELINE_IMAGES[0], progress: 0 },
-    { label: `${t.month} 1`, title: t.month2, image: MONTH_TIMELINE_IMAGES[1], progress: 8 },
-    { label: `${t.month} 2`, title: t.month3, image: MONTH_TIMELINE_IMAGES[2], progress: 17 },
-    { label: `${t.month} 3`, title: t.month4, image: MONTH_TIMELINE_IMAGES[3], progress: 25 },
-    { label: `${t.month} 4`, title: t.month5, image: MONTH_TIMELINE_IMAGES[4], progress: 33 },
-    { label: `${t.month} 5`, title: t.month6, image: MONTH_TIMELINE_IMAGES[5], progress: 42 },
-    { label: `${t.month} 6`, title: t.month7, image: MONTH_TIMELINE_IMAGES[6], progress: 50 },
-    { label: `${t.month} 7`, title: t.month8, image: MONTH_TIMELINE_IMAGES[7], progress: 58 },
-    { label: `${t.month} 8`, title: t.month9, image: MONTH_TIMELINE_IMAGES[8], progress: 67 },
-    { label: `${t.month} 9`, title: t.month10, image: MONTH_TIMELINE_IMAGES[9], progress: 75 },
-    { label: `${t.month} 10`, title: t.month11, image: MONTH_TIMELINE_IMAGES[10], progress: 83 },
-    { label: `${t.month} 11`, title: t.month12, image: MONTH_TIMELINE_IMAGES[11], progress: 92 },
-    { label: `${t.month} 12`, title: t.celebratingOneYear, image: MONTH_TIMELINE_IMAGES[12], progress: 100 },
-  ];
+  const monthTimeline = Array.from({ length: 13 }, (_, index) => ({
+    label: `${t.month} ${index}`,
+    title: getTimelineTitle(index, t),
+    image: MONTH_TIMELINE_IMAGES[index],
+    progress: Math.round((index / 12) * 100),
+  }));
 
   return (
     <main ref={containerRef} className="min-w-0 overflow-x-clip bg-[var(--pink-bg)] antialiased select-none">
@@ -707,14 +712,16 @@ export default function Home() {
         </motion.div>
 
         {/* Elegant Minimal Anchor Link Button */}
-        <motion.a
-          href="#invitation-details"
-          className="absolute bottom-10 left-1/2 z-20 -translate-x-1/2 inline-flex h-14 w-14 items-center justify-center rounded-full border border-white/20 bg-white/5 text-white backdrop-blur-md hover:bg-white/10 hover:border-white/40 transition-all duration-300 shadow-md group"
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-        >
-          <ChevronDown className="h-5 w-5 opacity-70 group-hover:opacity-100 transition-opacity" />
-        </motion.a>
+        <div className="pointer-events-none absolute inset-x-0 bottom-10 z-20 flex justify-center">
+          <motion.a
+            href="#invitation-details"
+            className="pointer-events-auto inline-flex h-14 w-14 items-center justify-center rounded-full border border-white/20 bg-white/5 text-white shadow-md backdrop-blur-md transition-all duration-300 hover:border-white/40 hover:bg-white/10 group"
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            <ChevronDown className="h-5 w-5 opacity-70 transition-opacity group-hover:opacity-100" />
+          </motion.a>
+        </div>
       </section>
 
       <InvitationDetailsSection />
@@ -727,7 +734,7 @@ export default function Home() {
               <SectionHeading eyebrow={t.memories} title={t.galleryTitle} />
             </div>
 
-            <div className="grid auto-rows-[280px] grid-cols-1 gap-4 sm:grid-cols-2 sm:auto-rows-[300px] lg:grid-cols-4 lg:grid-rows-2 lg:gap-6">
+            <div className="grid auto-rows-[280px] grid-cols-1 gap-4 sm:grid-cols-2 sm:auto-rows-[300px] lg:grid-cols-4 lg:grid-rows-3 lg:gap-6">
               <GalleryMosaicCard
                 img={GALLERY_BENTO_IMAGES[0]}
                 span="lg:col-span-2 lg:row-span-2"
@@ -740,7 +747,7 @@ export default function Home() {
                 img={GALLERY_BENTO_IMAGES[1]}
                 span="lg:col-span-1 lg:row-span-1"
                 parallax={-0.05}
-                tag={t.tinyToes}
+                tag={t.joyous}
                 index={1}
                 scrollYProgress={scrollYProgress}
               />
@@ -758,6 +765,14 @@ export default function Home() {
                 parallax={-0.1}
                 tag={t.pureJoy}
                 index={3}
+                scrollYProgress={scrollYProgress}
+              />
+              <GalleryMosaicCard
+                img={GALLERY_BENTO_IMAGES[4]}
+                span="sm:col-span-2 lg:col-span-2 lg:row-span-1"
+                parallax={0.08}
+                tag={t.growingFast}
+                index={4}
                 scrollYProgress={scrollYProgress}
               />
             </div>

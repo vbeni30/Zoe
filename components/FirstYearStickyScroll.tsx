@@ -155,7 +155,7 @@ export default function FirstYearStickyScroll({ items }: FirstYearStickyScrollPr
               <NavButton direction="prev" label={t.timelinePrevious} onClick={goPrev} disabled={!canGoPrev} />
             </div>
 
-            <div className="relative min-h-[min(48vh,420px)] flex-1 overflow-hidden rounded-[32px] border border-pink-200/80 bg-pink-50 shadow-[0_24px_60px_rgba(244,114,182,0.18)] lg:min-h-[min(64vh,560px)]">
+            <div className="relative aspect-[3/4] w-full flex-1 overflow-hidden rounded-[32px] border border-pink-200/80 bg-pink-50 shadow-[0_24px_60px_rgba(244,114,182,0.18)] sm:aspect-auto sm:min-h-[min(52vh,480px)] lg:min-h-[min(64vh,560px)]">
               <AnimatePresence mode="wait" initial={false}>
                 <motion.div
                   key={active.image}
@@ -163,7 +163,7 @@ export default function FirstYearStickyScroll({ items }: FirstYearStickyScrollPr
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -40 }}
                   transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                  className="absolute inset-0"
+                  className="absolute inset-0 flex items-center justify-center bg-pink-50/80"
                 >
                   <Image
                     src={active.image}
@@ -172,7 +172,7 @@ export default function FirstYearStickyScroll({ items }: FirstYearStickyScrollPr
                     sizes="(max-width: 1024px) 100vw, 640px"
                     quality={80}
                     priority={activeIndex <= 1}
-                    className="object-cover"
+                    className="object-contain lg:object-cover"
                   />
                 </motion.div>
               </AnimatePresence>
