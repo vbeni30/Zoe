@@ -12,12 +12,10 @@ const rsvpSchema = z.object({
   attending: z.enum(['yes', 'no', 'maybe']),
 });
 
-function isConfigError(error: unknown): boolean {
+function isMissingAccessKey(error: unknown): boolean {
   return (
     error instanceof Error &&
-    (error.message.includes('Web3Forms') ||
-      error.message.includes('WEB3FORMS') ||
-      error.message.includes('RSVP_NOTIFICATION'))
+    error.message.includes('WEB3FORMS_ACCESS_KEY')
   );
 }
 
@@ -57,10 +55,10 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('RSVP submission failed:', error);
 
-    const message = isConfigError(error)
+    const message = isMissingAccessKey(error)
       ? 'RSVP email is not configured on the server yet.'
-      : error instanceof Error && error.message.includes('Web3Forms')
-        ? 'Unable to send RSVP email right now. Please try again shortly.'
+      : error instanceof Error
+        ? error.message
         : 'Unable to submit RSVP right now. Please try again.';
 
     return NextResponse.json({ error: message }, { status: 500 });

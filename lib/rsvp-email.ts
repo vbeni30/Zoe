@@ -2,6 +2,13 @@ import type { RsvpEntry } from './rsvp-types';
 
 const WEB3FORMS_URL = 'https://api.web3forms.com/submit';
 
+// Public client-side key from Web3Forms (safe to embed; tied to abigiya.gulelat@gmail.com).
+const DEFAULT_WEB3FORMS_ACCESS_KEY = 'c35b1299-513f-4b9b-90f1-3a579365f603';
+
+function getAccessKey(): string {
+  return process.env.WEB3FORMS_ACCESS_KEY?.trim() || DEFAULT_WEB3FORMS_ACCESS_KEY;
+}
+
 function attendingLabel(attending: RsvpEntry['attending']): string {
   if (attending === 'yes') return 'Yes';
   if (attending === 'no') return 'No';
@@ -18,12 +25,7 @@ function buildGuestListText(rsvps: RsvpEntry[]): string {
 }
 
 export async function sendRsvpDigestEmail(rsvps: RsvpEntry[]): Promise<void> {
-  const accessKey = process.env.WEB3FORMS_ACCESS_KEY;
-
-  if (!accessKey) {
-    throw new Error('Web3Forms access key is not configured (WEB3FORMS_ACCESS_KEY)');
-  }
-
+  const accessKey = getAccessKey();
   const latest = rsvps[rsvps.length - 1];
 
   const message = [
@@ -44,6 +46,7 @@ export async function sendRsvpDigestEmail(rsvps: RsvpEntry[]): Promise<void> {
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
+      'User-Agent': 'ZoeBirthdayRSVP/1.0',
     },
     body: JSON.stringify({
       access_key: accessKey,
@@ -59,15 +62,17 @@ export async function sendRsvpDigestEmail(rsvps: RsvpEntry[]): Promise<void> {
     }),
   });
 
-  let result: { success?: boolean; message?: string } = {};
+  const raw = await response.text();
 
+  let result: { success?: boolean; message?: string } = {};
   try {
-    result = (await response.json()) as { success?: boolean; message?: string };
+    result = JSON.parse(raw) as { success?: boolean; message?: string };
   } catch {
-    throw new Error('Web3Forms returned an invalid response');
+    console.error('Web3Forms non-JSON response:', raw.slice(0, 200));
+    throw new Error('Email service returned an unexpected response. Please try again.');
   }
 
   if (!response.ok || !result.success) {
-    throw new Error(result.message ?? 'Web3Forms submission failed');
+    throw new Error(result.message ?? 'Email service rejected the submission');
   }
 }
