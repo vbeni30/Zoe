@@ -623,19 +623,19 @@ export default function Home() {
   const heroTextOpacity = useTransform(scrollYProgress, [0, 0.4], [1, 0]);
 
   const monthTimeline = [
-    { label: `${t.month} 1`, title: t.month1, image: MONTH_TIMELINE_IMAGES[0], progress: 8 },
-    { label: `${t.month} 2`, title: t.month2, image: MONTH_TIMELINE_IMAGES[1], progress: 16 },
-    { label: `${t.month} 3`, title: t.month3, image: MONTH_TIMELINE_IMAGES[2], progress: 24 },
-    { label: `${t.month} 4`, title: t.month4, image: MONTH_TIMELINE_IMAGES[3], progress: 32 },
-    { label: `${t.month} 5`, title: t.month5, image: MONTH_TIMELINE_IMAGES[4], progress: 40 },
-    { label: `${t.month} 6`, title: t.month6, image: MONTH_TIMELINE_IMAGES[5], progress: 48 },
-    { label: `${t.month} 7`, title: t.month7, image: MONTH_TIMELINE_IMAGES[6], progress: 56 },
-    { label: `${t.month} 8`, title: t.month8, image: MONTH_TIMELINE_IMAGES[7], progress: 64 },
-    { label: `${t.month} 9`, title: t.month9, image: MONTH_TIMELINE_IMAGES[8], progress: 72 },
-    { label: `${t.month} 10`, title: t.month10, image: MONTH_TIMELINE_IMAGES[9], progress: 80 },
-    { label: `${t.month} 11`, title: t.month11, image: MONTH_TIMELINE_IMAGES[10], progress: 88 },
-    { label: `${t.month} 12`, title: t.month12, image: MONTH_TIMELINE_IMAGES[11], progress: 96 },
-    { label: '1 Year', title: t.celebratingOneYear, image: MONTH_TIMELINE_IMAGES[12], progress: 100 },
+    { label: `${t.month} 0`, title: t.month1, image: MONTH_TIMELINE_IMAGES[0], progress: 0 },
+    { label: `${t.month} 1`, title: t.month2, image: MONTH_TIMELINE_IMAGES[1], progress: 8 },
+    { label: `${t.month} 2`, title: t.month3, image: MONTH_TIMELINE_IMAGES[2], progress: 17 },
+    { label: `${t.month} 3`, title: t.month4, image: MONTH_TIMELINE_IMAGES[3], progress: 25 },
+    { label: `${t.month} 4`, title: t.month5, image: MONTH_TIMELINE_IMAGES[4], progress: 33 },
+    { label: `${t.month} 5`, title: t.month6, image: MONTH_TIMELINE_IMAGES[5], progress: 42 },
+    { label: `${t.month} 6`, title: t.month7, image: MONTH_TIMELINE_IMAGES[6], progress: 50 },
+    { label: `${t.month} 7`, title: t.month8, image: MONTH_TIMELINE_IMAGES[7], progress: 58 },
+    { label: `${t.month} 8`, title: t.month9, image: MONTH_TIMELINE_IMAGES[8], progress: 67 },
+    { label: `${t.month} 9`, title: t.month10, image: MONTH_TIMELINE_IMAGES[9], progress: 75 },
+    { label: `${t.month} 10`, title: t.month11, image: MONTH_TIMELINE_IMAGES[10], progress: 83 },
+    { label: `${t.month} 11`, title: t.month12, image: MONTH_TIMELINE_IMAGES[11], progress: 92 },
+    { label: `${t.month} 12`, title: t.celebratingOneYear, image: MONTH_TIMELINE_IMAGES[12], progress: 100 },
   ];
 
   return (

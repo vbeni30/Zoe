@@ -69,8 +69,7 @@ export default function FirstYearStickyScroll({ items }: FirstYearStickyScrollPr
 
   const count = items.length;
   const active = items[activeIndex] ?? items[0];
-  const isYearStep = activeIndex === count - 1;
-  const display = isYearStep ? '01' : String(activeIndex + 1).padStart(2, '0');
+  const display = String(activeIndex).padStart(2, '0');
   const [d0, d1] = display.split('');
 
   const canGoPrev = activeIndex > 0;
@@ -101,14 +100,14 @@ export default function FirstYearStickyScroll({ items }: FirstYearStickyScrollPr
         <div className="flex flex-1 flex-col justify-center lg:max-w-[42%]">
           <div className="flex flex-col items-start gap-4">
             <p className="font-sans text-[11px] font-bold uppercase tracking-[0.32em] text-pink-500">
-              {isYearStep ? 'Milestone' : t.month}
+              {t.month}
             </p>
             <div className="flex items-center gap-2 sm:gap-3">
               <OdometerDigit digit={d0} />
               <OdometerDigit digit={d1} />
             </div>
             <p className="font-sans text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-400">
-              {String(activeIndex + 1).padStart(2, '0')} / {String(count).padStart(2, '0')}
+              {String(activeIndex).padStart(2, '0')} / 12
             </p>
           </div>
 
