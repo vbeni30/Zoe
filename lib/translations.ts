@@ -71,6 +71,7 @@ export const translations = {
     // Footer
     withLoveGratitude: 'With Love & Gratitude',
     footerTagline: "We can't wait to celebrate with you",
+    developedBy: 'Developed by',
     copyright: "© 2025 Baby Girl's First Birthday Celebration",
 
     // RSVP
@@ -162,6 +163,7 @@ export const translations = {
 
     withLoveGratitude: 'በፍቅርና በአመስጋኝነት',
     footerTagline: 'ከእናንተ ጋር ለመከበር በጉጉት እንጠብቃለን',
+    developedBy: 'የተሰራው',
     copyright: '© 2025 የዞይ የመጀመሪያ ዓመት በዓል',
 
     rsvpHeader: 'እባክዎ ምላሽ ይስጡ',
@@ -252,6 +254,7 @@ export const translations = {
 
     withLoveGratitude: 'Avec tout notre amour',
     footerTagline: 'Nous avons hâte de fêter cela avec vous',
+    developedBy: 'Développé par',
     copyright: '© 2025 Premier anniversaire de Zoé',
 
     rsvpHeader: 'Merci de nous répondre',

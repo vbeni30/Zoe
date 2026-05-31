@@ -812,6 +812,17 @@ export default function Home() {
           <p className="mt-6 font-sans text-[10px] font-semibold uppercase tracking-[0.25em] text-slate-400 sm:mt-8">
             © {new Date().getFullYear()} · Zoe&apos;s First Birthday
           </p>
+          <p className="font-sans text-[10px] tracking-[0.12em] text-slate-400">
+            {t.developedBy}{' '}
+            <a
+              href="https://vbeni.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-pink-500/80 transition-colors hover:text-pink-600"
+            >
+              vbeni
+            </a>
+          </p>
         </div>
       </footer>
     </main>
