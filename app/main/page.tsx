@@ -153,9 +153,15 @@ function InvitationDetailsSection() {
               <MapPin className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 lg:h-7 lg:w-7" strokeWidth={1.5} />
             </div>
             <h3 className={detailLabelClass}>{t.location}</h3>
-            <p className={`${detailValueClass} mb-2 sm:mb-3`}>{t.eventLocation}</p>
+            <p className={`${detailValueClass} mb-1`}>{t.eventLocationVenue}</p>
+            <p className="relative z-10 mb-2 font-serif text-sm leading-snug text-white/85 sm:text-base">
+              {t.eventLocationAddress}
+            </p>
+            <p className="relative z-10 mb-2 font-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-pink-100/90 sm:text-[11px]">
+              {t.eventFood}
+            </p>
             <a
-              href="https://maps.google.com"
+              href="https://www.google.com/maps/search/?api=1&query=Parc+Montsouris,+2+rue+Gazan,+75014+Paris"
               target="_blank"
               rel="noopener noreferrer"
               className="relative z-10 inline-flex min-h-9 items-center gap-2 px-1 font-sans text-[9px] font-bold uppercase tracking-[0.14em] text-pink-100 transition-colors after:absolute after:bottom-0 after:left-0 after:h-px after:w-full after:origin-right after:scale-x-0 after:bg-pink-100 after:transition-transform after:duration-300 hover:text-white hover:after:origin-left hover:after:scale-x-100 sm:min-h-11 sm:text-[10px] sm:tracking-[0.16em] md:text-[11px] md:tracking-widest"
